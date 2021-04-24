@@ -1,7 +1,7 @@
 `timescale 1ns/1ns
 
 module structural_adder_tb();
-  parameter N = 3;
+  parameter N = 32;
 
   reg clock;
   initial clock = 0;
@@ -12,7 +12,7 @@ module structural_adder_tb();
 
   // Note: this assumes that you have the parameter N in your structural_adder code
   // (the bitwidth of your operands)
-  structural_adder #(.N(3)) dut (
+  structural_adder #(.N(32)) dut (
     .a(operand1),
     .b(operand2),
     .sum(adder_output)
@@ -20,12 +20,12 @@ module structural_adder_tb();
 
   initial begin
     #0;
-    operand1 = 3'b001;
-    operand2 = 3'b001;
+    operand1 = 32'd1000;
+    operand2 = 32'd1000;
     #100;
-    operand1 = 3'b100;
+    operand1 = 32'd2000;
     #300;
-    operand2 = 3'b100;
+    operand2 = 32'd3000;
     #500;
     $finish();
   end
