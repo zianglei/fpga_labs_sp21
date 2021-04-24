@@ -1,11 +1,10 @@
 `timescale 1ns/1ns
 
 module z1top_counter (
-  input CLK_125MHZ_FPGA,
+  input CLK_100MHZ_FPGA,
   input [3:0] BUTTONS,
-  output [5:0] LEDS
+  output [3:0] LEDS
 );
-  assign LEDS[5:4] = 0;
 
   // Some initial code has been provided for you
   wire [3:0] led_cnt_value;
@@ -17,7 +16,7 @@ module z1top_counter (
   // This register will be updated every one second,
   // and the value will be displayed on the LEDs
   REGISTER_CE #(.N(4)) led_cnt (
-    .clk(CLK_125MHZ_FPGA),
+    .clk(CLK_100MHZ_FPGA),
     .ce(led_cnt_ce),
     .d(led_cnt_next),
     .q(led_cnt_value));
@@ -25,10 +24,20 @@ module z1top_counter (
   assign led_cnt_next = led_cnt_value + 1;
 
   // TODO: Instantiate another REGISTER module to count the number of cycles
-  // required to reach one second. Note that our clock period is 8ns.
+  // required to reach one second. Note that our clock period is 10ns.
   // You also need to think of how many bits are needed for your register
+  wire [26:0] clk_cnt_value;
+  wire [26:0] clk_cnt_next;
+
+  REGISTER #(.N(27)) clk_cnt (
+    .clk(CLK_100MHZ_FPGA),
+    .d(clk_cnt_next),
+    .q(clk_cnt_value)
+  );
+
+  assign clk_cnt_next = (clk_cnt_value == 27'd100_000_000 - 1) ? 27'd0 : clk_cnt_value + 1;
 
   // TODO: Correct the following assignment
-  assign led_cnt_ce = 1'b0;
+  assign led_cnt_ce = (clk_cnt_value == 27'd100_000_000 - 1) ? 1'b1 : 1'b0;
 
 endmodule
