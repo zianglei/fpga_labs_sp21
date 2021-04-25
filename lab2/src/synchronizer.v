@@ -10,8 +10,18 @@ module synchronizer #(parameter WIDTH = 1) (
   // (from different clock domain or not clocked, such as button press) signals
   // and should output a vector of WIDTH-bit synchronous signals
   // that are synchronized to the input clk
+  wire [WIDTH-1: 0] inter_signal;
+  
+  REGISTER #(.N(WIDTH)) r1 (
+    .clk(clk),
+    .d(async_signal),
+    .q(inter_signal)
+  );
 
-  // Remove this line once you create your synchronizer
-  assign sync_signal = 0;
+  REGISTER #(.N(WIDTH)) r2 (
+    .clk(clk),
+    .d(inter_signal),
+    .q(sync_signal)
+  );
 
 endmodule
