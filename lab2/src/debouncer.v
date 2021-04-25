@@ -45,15 +45,15 @@ module debouncer #(
   endgenerate
 
   // TODO: Update these lines
-  assign wrapping_cnt_next = 0;
-  assign wrapping_cnt_rst = 0;
+  assign wrapping_cnt_next = wrapping_cnt_value + 1;
+  assign wrapping_cnt_rst = (wrapping_cnt_value == SAMPLE_CNT_MAX);
   generate for (i = 0; i < WIDTH; i = i + 1) begin
     assign debounced_signal[i] = (sat_cnt_value[i] == PULSE_CNT_MAX);
 
     // TODO: Update these lines
-    assign sat_cnt_next[i] = 0;
-    assign sat_cnt_rst[i]  = 0;
-    assign sat_cnt_ce[i]   = 0;
+    assign sat_cnt_next[i] = (sat_cnt_value[i] == PULSE_CNT_MAX) ? PULSE_CNT_MAX : sat_cnt_value[i] + 1;
+    assign sat_cnt_rst[i]  = ~glitchy_signal[i];
+    assign sat_cnt_ce[i]   = glitchy_signal[i] & wrapping_cnt_rst;
   end
   endgenerate
 
