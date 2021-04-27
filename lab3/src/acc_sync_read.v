@@ -41,19 +41,19 @@ module acc_sync_read #(
   );
 
   // TODO: Update these lines
-  assign read_addr = 0;
+  assign read_addr = index_reg_value;
 
-  assign index_reg_next = 0;
-  assign index_reg_ce   = 0;
-  assign index_reg_rst  = 0;
+  assign index_reg_next = index_reg_value + 1;
+  assign index_reg_ce   = !(index_reg_value == len + 1);
+  assign index_reg_rst  = rst;
 
-  assign sum_reg_next = 0;
-  assign sum_reg_ce   = 0;
-  assign sum_reg_rst  = 0;
+  assign sum_reg_next = sum_reg_value + read_data;
+  assign sum_reg_ce   = !(index_reg_value == len + 1 || index_reg_value == 0);
+  assign sum_reg_rst  = rst;
 
-  assign acc_result = 0;
+  assign acc_result = sum_reg_value;
 
   // Note that you must hold 'done' HIGH when the computation finishes
-  assign done = 0;
+  assign done = (index_reg_value == len + 1);
 
 endmodule

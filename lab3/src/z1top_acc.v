@@ -1,11 +1,11 @@
 `timescale 1ns/1ns
-`define CLOCK_FREQ 125_000_000
+`define CLOCK_FREQ 100_000_000
 
 module z1top_acc (
-  input CLK_125MHZ_FPGA,
+  input CLK_100MHZ_FPGA,
   input [3:0] BUTTONS,
   input [1:0] SWITCHES,
-  output [5:0] LEDS
+  output [3:0] LEDS
 );
 
   // Button parser
@@ -20,7 +20,7 @@ module z1top_acc (
     .SAMPLE_CNT_MAX(B_SAMPLE_CNT_MAX),
     .PULSE_CNT_MAX(B_PULSE_CNT_MAX)
   ) bp (
-    .clk(CLK_125MHZ_FPGA),
+    .clk(CLK_100MHZ_FPGA),
     .in(BUTTONS),
     .out(buttons_pressed));
 
@@ -39,14 +39,14 @@ module z1top_acc (
     .q(s_rst_reg_value),
     .d(s_rst_reg_next),
     .ce(s_rst_reg_ce),
-    .clk(CLK_125MHZ_FPGA)
+    .clk(CLK_100MHZ_FPGA)
   );
 
   REGISTER_CE #(.N(1)) a_rst_reg(
     .q(a_rst_reg_value),
     .d(a_rst_reg_next),
     .ce(a_rst_reg_ce),
-    .clk(CLK_125MHZ_FPGA)
+    .clk(CLK_100MHZ_FPGA)
   );
 
   assign s_rst_reg_next = ~s_rst_reg_value;
@@ -66,7 +66,7 @@ module z1top_acc (
     .DWIDTH(DWIDTH),
     .MIF_HEX("test_data_sync.mif")
   ) srom (
-    .clk(CLK_125MHZ_FPGA),
+    .clk(CLK_100MHZ_FPGA),
     .en(1'b1),
     .addr(s_read_addr), // input
     .q(s_read_data)     // output
@@ -76,7 +76,7 @@ module z1top_acc (
     .AWIDTH(AWIDTH),
     .DWIDTH(DWIDTH)
   ) ACC_SYNC_R (
-    .clk(CLK_125MHZ_FPGA),
+    .clk(CLK_100MHZ_FPGA),
     .rst(s_rst),
     .done(s_done),            // output
     .read_addr(s_read_addr),  // output
@@ -98,7 +98,7 @@ module z1top_acc (
     .AWIDTH(AWIDTH),
     .DWIDTH(DWIDTH)
   ) ACC_ASYNC_R (
-    .clk(CLK_125MHZ_FPGA),
+    .clk(CLK_100MHZ_FPGA),
     .rst(a_rst),
     .done(a_done),            // output
     .read_addr(a_read_addr),  // output
@@ -108,8 +108,8 @@ module z1top_acc (
   );
 
   // Checksums
-  assign LEDS[5] = (s_acc_result == 32'd541587138) && (s_done == 1);
-  assign LEDS[4] = (a_acc_result == 32'd514007903) && (a_done == 1);
-  assign LEDS[3:0] = 4'h0;
+  assign LEDS[0] = (s_acc_result == 32'd541587138) && (s_done == 1);
+  assign LEDS[1] = (a_acc_result == 32'd514007903) && (a_done == 1);
+  // assign LEDS[3:0] = 4'h0;
 
 endmodule
