@@ -1,11 +1,11 @@
 `timescale 1ns/1ns
-`define CLOCK_FREQ 125_000_000
+`define CLOCK_FREQ 100_000_000
 
 module z1top_fifo_io (
-  input CLK_125MHZ_FPGA,
+  input CLK_100MHZ_FPGA,
   input [3:0] BUTTONS,
   input [1:0] SWITCHES,
-  output [5:0] LEDS
+  output [3:0] LEDS
 );
 
   // Button parser test circuit
@@ -20,7 +20,7 @@ module z1top_fifo_io (
     .SAMPLE_CNT_MAX(B_SAMPLE_CNT_MAX),
     .PULSE_CNT_MAX(B_PULSE_CNT_MAX)
   ) bp (
-    .clk(CLK_125MHZ_FPGA),
+    .clk(CLK_100MHZ_FPGA),
     .in(BUTTONS),
     .out(buttons_pressed));
 
@@ -33,7 +33,7 @@ module z1top_fifo_io (
     .WIDTH(FIFO_WIDTH),
     .LOGDEPTH (FIFO_LOGDEPTH)
   ) FIFO (
-    .clk(CLK_125MHZ_FPGA),
+    .clk(CLK_100MHZ_FPGA),
     .rst(SWITCHES[1] & buttons_pressed[3]),
 
     .enq_valid(fifo_enq_valid), // input
@@ -52,7 +52,7 @@ module z1top_fifo_io (
     .q(timer_cnt_value),
     .d(timer_cnt_next),
     .rst(timer_cnt_rst),
-    .clk(CLK_125MHZ_FPGA)
+    .clk(CLK_100MHZ_FPGA)
   );
 
   wire [3:0] led_status_value, led_status_next;
@@ -61,7 +61,7 @@ module z1top_fifo_io (
     .q(led_status_value),
     .d(led_status_next),
     .ce(led_status_ce),
-    .clk(CLK_125MHZ_FPGA)
+    .clk(CLK_100MHZ_FPGA)
   );
 
   assign fifo_enq_valid = (~SWITCHES[1]) & (|(buttons_pressed));
