@@ -1,12 +1,12 @@
 `timescale 1ns/1ns
-`define CLOCK_FREQ 125_000_000
+`define CLOCK_FREQ 100_000_000
 
 // You should not need to change this file
 module z1top_uart_echo (
-  input CLK_125MHZ_FPGA,
+  input CLK_100MHZ_FPGA,
   input [3:0] BUTTONS,
   input [1:0] SWITCHES,
-  output [5:0] LEDS,
+  output [3:0] LEDS,
 
   input  FPGA_SERIAL_RX,
   output FPGA_SERIAL_TX
@@ -24,7 +24,7 @@ module z1top_uart_echo (
     .SAMPLE_CNT_MAX(B_SAMPLE_CNT_MAX),
     .PULSE_CNT_MAX(B_PULSE_CNT_MAX)
   ) bp (
-    .clk(CLK_125MHZ_FPGA),
+    .clk(CLK_100MHZ_FPGA),
     .in(BUTTONS),
     .out(buttons_pressed)
   );
@@ -35,12 +35,10 @@ module z1top_uart_echo (
     .CLOCK_FREQ(`CLOCK_FREQ),
     .BAUD_RATE(115_200)
   ) UART (
-    .clk(CLK_125MHZ_FPGA),
+    .clk(CLK_100MHZ_FPGA),
     .rst(rst),
     .serial_in(FPGA_SERIAL_RX), // input
     .serial_out(FPGA_SERIAL_TX) // output
   );
-
-  assign LEDS[5:4] = 2'b11;
 
 endmodule

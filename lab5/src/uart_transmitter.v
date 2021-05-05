@@ -58,7 +58,7 @@ module uart_transmitter #(
 
   assign clock_counter_next = clock_counter_value + 1;
   assign clock_counter_ce = 1'b1;
-  assign clock_counter_rst = rst | (clock_counter_value == SYMBOL_EDGE_TIME - 1);
+  assign clock_counter_rst = rst | symbol_edge | data_in_fire;
 
   assign bit_counter_next = (bit_counter_value == 4'd9) ? 4'd9 : bit_counter_value + 1;
   assign bit_counter_ce = symbol_edge; 

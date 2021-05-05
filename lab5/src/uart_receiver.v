@@ -74,6 +74,7 @@ module uart_receiver #(
 
   // 'start' becomes HIGH once we receive the start bit ('0') and
   // the bit counter has not started counting
+  // 'start' is used to start the clock counter
   wire start;
   REGISTER_R_CE #(.N(1), .INIT(0)) start_reg (
     .q(start),

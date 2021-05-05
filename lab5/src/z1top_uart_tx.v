@@ -1,12 +1,12 @@
 `timescale 1ns/1ns
-`define CLOCK_FREQ 125_000_000
+`define CLOCK_FREQ 100_000_000
 
 // You should not need to change this file
 module z1top_uart_tx (
-  input CLK_125MHZ_FPGA,
+  input CLK_100MHZ_FPGA,
   input [3:0] BUTTONS,
   input [1:0] SWITCHES,
-  output [5:0] LEDS,
+  output [3:0] LEDS,
 
   output FPGA_SERIAL_TX
 );
@@ -22,7 +22,7 @@ module z1top_uart_tx (
     .SAMPLE_CNT_MAX(B_SAMPLE_CNT_MAX),
     .PULSE_CNT_MAX(B_PULSE_CNT_MAX)
   ) bp (
-    .clk(CLK_125MHZ_FPGA),
+    .clk(CLK_100MHZ_FPGA),
     .in(BUTTONS),
     .out(buttons_pressed)
   );
@@ -55,14 +55,14 @@ module z1top_uart_tx (
     .q(button_data_value),
     .d(button_data),
     .ce(button_data_valid),
-    .clk(CLK_125MHZ_FPGA)
+    .clk(CLK_100MHZ_FPGA)
   );
 
   wire [7:0] rdata_out;
   wire rdata_out_valid, rdata_out_ready;
 
   read_rom read_rom (
-    .clk(CLK_125MHZ_FPGA),
+    .clk(CLK_100MHZ_FPGA),
     .rst(rst),
     .read_en(SWITCHES[1]),
 
@@ -79,7 +79,7 @@ module z1top_uart_tx (
     .CLOCK_FREQ(`CLOCK_FREQ),
     .BAUD_RATE(115_200)
   ) uart_tx (
-    .clk(CLK_125MHZ_FPGA),
+    .clk(CLK_100MHZ_FPGA),
     .rst(rst),
     .data_in(uart_tx_data_in),             // input
     .data_in_valid(uart_tx_data_in_valid), // input
@@ -93,6 +93,5 @@ module z1top_uart_tx (
   assign rdata_out_ready       = uart_tx_data_in_ready;
 
   assign LEDS[3:0] = (~SWITCHES[0]) ? button_data_value[3:0] : button_data_value[7:4];
-  assign LEDS[5:4] = 2'b11;
-
+ 
 endmodule
