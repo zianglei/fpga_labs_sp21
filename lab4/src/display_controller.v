@@ -88,37 +88,26 @@ module display_controller #(
   // After you finish task 1, simulate with the testbench 'sim/display_controller_tb.v'
   // For task 2, you need to implement proper control logic to read the 'pixel_stream_din'
   // After you finish task 2, simulate with the testbench 'sim/fifo_display_tb.v'
+  wire data_in_fire = pixel_stream_din_ready & pixel_stream_din_valid;
 
   assign video_out_pHSync = (pixel_x_value >= H_SYNC_START && pixel_x_value < H_SYNC_END);
   assign video_out_pVSync = (pixel_y_value >= V_SYNC_START && pixel_y_value < V_SYNC_END);
-  assign video_out_pVDE   = (pixel_y_value < V_ACTIVE_VIDEO) ? (pixel_x_value < H_ACTIVE_VIDEO) : 0;
+  assign video_out_pVDE   = !data_in_fire ? 0 :
+                            (pixel_y_value < V_ACTIVE_VIDEO) ? (pixel_x_value < H_ACTIVE_VIDEO) : 0;
 
   assign pixel_x_next = pixel_x_value + 1;
-  assign pixel_x_ce   = 1;
+  assign pixel_x_ce   = data_in_fire;
   assign pixel_x_rst  = rst || pixel_x_value == H_FRAME - 1;
 
   assign pixel_y_next = (pixel_y_value == V_FRAME - 1) ? 0 : pixel_y_value + 1;
   assign pixel_y_ce   = pixel_x_value == H_FRAME - 1;
   assign pixel_y_rst  = rst;
 
-  wire data_in_fire = pixel_stream_din_ready & pixel_stream_din_valid;
   wire [23:0] pixel_data_value, pixel_data_next;
   wire pixel_data_ce, pixel_data_rst;
 
-  REGISTER_R_CE #(.N(24), .INIT(0)) pixel_data (
-    .d(pixel_data_next),
-    .q(pixel_data_value),
-    .ce(pixel_data_ce),
-    .rst(pixel_data_rst),
-    .clk(pixel_clk) 
-  );
-
-  assign pixel_data_ce = data_in_fire;
-  assign pixel_data_rst = rst;
-  assign pixel_data_next = pixel_stream_din;
-  assign video_out_pData = pixel_data_value;
-
-  assign pixel_stream_din_ready = video_out_pVDE;
+  assign video_out_pData = pixel_stream_din;
+  assign pixel_stream_din_ready = (pixel_y_value < V_ACTIVE_VIDEO) ? (pixel_x_value < H_ACTIVE_VIDEO) : 0;
 
   // assign video_out_pData = `BLUE; // task 1
   // assign video_out_pData = pixel_stream_din; // task 2
