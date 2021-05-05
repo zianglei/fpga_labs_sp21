@@ -90,13 +90,23 @@ module display_controller #(
   // After you finish task 2, simulate with the testbench 'sim/fifo_display_tb.v'
   wire data_in_fire = pixel_stream_din_ready & pixel_stream_din_valid;
 
+  wire start;
+  REGISTER_R_CE #(.N(1), .INIT(0)) start_reg(
+    .q(start),
+    .d(1'b1),
+    .ce(pixel_stream_din_valid),
+    .rst(rst),
+    .clk(pixel_clk)
+  );
+
+
   assign video_out_pHSync = (pixel_x_value >= H_SYNC_START && pixel_x_value < H_SYNC_END);
   assign video_out_pVSync = (pixel_y_value >= V_SYNC_START && pixel_y_value < V_SYNC_END);
-  assign video_out_pVDE   = !data_in_fire ? 0 :
-                            (pixel_y_value < V_ACTIVE_VIDEO) ? (pixel_x_value < H_ACTIVE_VIDEO) : 0;
+  // the signal should start when the first video data is valid.
+  assign video_out_pVDE   = start & (pixel_y_value < V_ACTIVE_VIDEO) & (pixel_x_value < H_ACTIVE_VIDEO);
 
   assign pixel_x_next = pixel_x_value + 1;
-  assign pixel_x_ce   = data_in_fire;
+  assign pixel_x_ce   = start;
   assign pixel_x_rst  = rst || pixel_x_value == H_FRAME - 1;
 
   assign pixel_y_next = (pixel_y_value == V_FRAME - 1) ? 0 : pixel_y_value + 1;
@@ -107,7 +117,7 @@ module display_controller #(
   wire pixel_data_ce, pixel_data_rst;
 
   assign video_out_pData = pixel_stream_din;
-  assign pixel_stream_din_ready = (pixel_y_value < V_ACTIVE_VIDEO) ? (pixel_x_value < H_ACTIVE_VIDEO) : 0;
+  assign pixel_stream_din_ready = video_out_pVDE;
 
   // assign video_out_pData = `BLUE; // task 1
   // assign video_out_pData = pixel_stream_din; // task 2
