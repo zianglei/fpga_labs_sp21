@@ -1,7 +1,7 @@
 `timescale 1ns/1ns
 
 module z1top_fifo_display (
-  input CLK_125MHZ_FPGA,
+  input CLK_100MHZ_FPGA,
   input [3:0] BUTTONS,
   input [1:0] SWITCHES,
   output [5:0] LEDS,
@@ -17,7 +17,7 @@ module z1top_fifo_display (
 
   wire clk_in1, clk_out1;
   assign pixel_clk = clk_out1;
-  assign clk_in1 = CLK_125MHZ_FPGA;
+  assign clk_in1 = CLK_100MHZ_FPGA;
 
   // Clocking wizard IP from Vivado (wrapper of the PLLE module)
   // Generate 40 MHz clock from 125 MHz clock
@@ -98,7 +98,7 @@ module z1top_fifo_display (
   wire [23:0] video_out_pData_tmp;
   wire [23:0] video_data;
 
-  fifo_display (
+  fifo_display display(
     .pixel_clk(pixel_clk),
     .rst(rst),
     .play(play),
