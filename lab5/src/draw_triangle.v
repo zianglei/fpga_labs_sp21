@@ -112,16 +112,16 @@ module draw_triangle #(
   // The logic is similar to the display_controller module.
   // However, for video signals, you need to use pixel_x_out and pixel_y_out
 
-  assign pixel_x_next = 0;
-  assign pixel_x_ce   = 0;
-  assign pixel_x_rst  = 0;
+  assign pixel_x_next = pixel_x_value + 1;
+  assign pixel_x_ce   = 1;
+  assign pixel_x_rst  = pixel_x_value == H_FRAME - 1;
 
-  assign pixel_y_next = 0;
-  assign pixel_y_ce   = 0;
+  assign pixel_y_next = (pixel_y_value == V_FRAME - 1) ? 0 : pixel_y_value + 1;;
+  assign pixel_y_ce   = pixel_x_value == H_FRAME - 1;;
   assign pixel_y_rst  = 0;
 
-  assign video_out_pHSync = 0;
-  assign video_out_pVSync = 0;
-  assign video_out_pVDE   = 0;
+  assign video_out_pHSync = (pixel_x_out >= H_SYNC_START && pixel_x_out < H_SYNC_END);
+  assign video_out_pVSync = (pixel_y_out >= V_SYNC_START && pixel_y_out < V_SYNC_END);
+  assign video_out_pVDE   = (pixel_y_out < V_ACTIVE_VIDEO) & (pixel_x_out < H_ACTIVE_VIDEO);
 
 endmodule

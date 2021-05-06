@@ -1,10 +1,10 @@
 `timescale 1ns/1ns
 
 module z1top_draw_triangle (
-  input CLK_125MHZ_FPGA,
+  input CLK_100MHZ_FPGA,
   input [3:0] BUTTONS,
   input [1:0] SWITCHES,
-  output [5:0] LEDS,
+  output [3:0] LEDS,
 
   output pixel_clk,
 
@@ -20,11 +20,11 @@ module z1top_draw_triangle (
 
   wire clk_in1, clk_out1;
   assign pixel_clk = clk_out1;
-  assign clk_in1 = CLK_125MHZ_FPGA;
+  assign clk_in1 = CLK_100MHZ_FPGA;
 
   // TODO: Reduce the PIXEL_CLK_PERIOD to test with higher pixel clock frequency
   // The goal is to meet a pixel clock of 14 ns.
-  localparam PIXEL_CLK_PERIOD = 25;
+  localparam PIXEL_CLK_PERIOD = 14;
 
   localparam PIXEL_CLK_FREQ = 1_000_000_000 / PIXEL_CLK_PERIOD;
   // Clocking wizard IP from Vivado (wrapper of the PLLE module)
@@ -32,8 +32,8 @@ module z1top_draw_triangle (
   // PLL FREQ = (CLKFBOUT_MULT_F * 1000 / (CLKINx_PERIOD * DIVCLK_DIVIDE) must be within (800.000 MHz - 1600.000 MHz)
   // CLKOUTx_PERIOD = CLKINx_PERIOD x DIVCLK_DIVIDE x CLKOUT0_DIVIDE / CLKFBOUT_MULT_F
   clk_wiz #(
-    .CLKIN1_PERIOD(8),
-    .CLKFBOUT_MULT_F(8),
+    .CLKIN1_PERIOD(10),
+    .CLKFBOUT_MULT_F(10),
     .DIVCLK_DIVIDE(1),
     .CLKOUT0_DIVIDE(PIXEL_CLK_PERIOD)
   ) clk_wiz (

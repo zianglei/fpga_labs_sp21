@@ -83,6 +83,9 @@
 
   wire signed [31:0] pixel_x_value0, pixel_y_value0;
   wire signed [31:0] pixel_x_value1, pixel_y_value1;
+  wire signed [31:0] pixel_x_value2, pixel_y_value2;
+  wire signed [31:0] pixel_x_value3, pixel_y_value3;
+  wire signed [31:0] pixel_x_value4, pixel_y_value4;
 
   wire signed [31:0] x0_value0, y0_value0;
   wire signed [31:0] x1_value0, y1_value0;
@@ -98,51 +101,125 @@
   REGISTER #(.N(32)) x2_reg0 (.q(x2_value0), .d(x2), .clk(pixel_clk));
   REGISTER #(.N(32)) y2_reg0 (.q(y2_value0), .d(y2), .clk(pixel_clk));
 
-  wire signed [31:0] A0, B0, C0;
-  wire signed [31:0] A1, B1, C1;
-  wire signed [31:0] A2, B2, C2;
+
+  wire signed [31:0] dx0_value0, dy0_value0;
+  wire signed [31:0] dx1_value0, dy1_value0;
+  wire signed [31:0] dx2_value0, dy2_value0;
+
+  wire signed [31:0] x0_value1, y0_value1;
+  wire signed [31:0] x1_value1, y1_value1;
+  wire signed [31:0] x2_value1, y2_value1;
 
   wire signed [31:0] dx0 = x1_value0 - x0_value0;
   wire signed [31:0] dy0 = y1_value0 - y0_value0;
-  assign A0 = -dy0;
-  assign B0 = dx0;
-  assign C0 = x0_value0 * dy0 - y0_value0 * dx0;
 
   wire signed [31:0] dx1 = x2_value0 - x1_value0;
   wire signed [31:0] dy1 = y2_value0 - y1_value0;
-  assign A1 = -dy1;
-  assign B1 = dx1;
-  assign C1 = x1_value0 * dy1 - y1_value0 * dx1;
 
   wire signed [31:0] dx2 = x0_value0 - x2_value0;
   wire signed [31:0] dy2 = y0_value0 - y2_value0;
-  assign A2 = -dy2;
-  assign B2 = dx2;
-  assign C2 = x2_value0 * dy2 - y2_value0 * dx2;
 
-  wire signed [31:0] L0, L1, L2;
-  assign L0 = A0 * pixel_x_value0 + B0 * pixel_y_value0 + C0;
-  assign L1 = A1 * pixel_x_value0 + B1 * pixel_y_value0 + C1;
-  assign L2 = A2 * pixel_x_value0 + B2 * pixel_y_value0 + C2;
+  REGISTER #(.N(32)) dx0_reg0 (.q(dx0_value0), .d(dx0), .clk(pixel_clk));
+  REGISTER #(.N(32)) dy0_reg0 (.q(dy0_value0), .d(dy0), .clk(pixel_clk));
+  REGISTER #(.N(32)) dx1_reg0 (.q(dx1_value0), .d(dx1), .clk(pixel_clk));
+  REGISTER #(.N(32)) dy1_reg0 (.q(dy1_value0), .d(dy1), .clk(pixel_clk));
+  REGISTER #(.N(32)) dx2_reg0 (.q(dx2_value0), .d(dx2), .clk(pixel_clk));
+  REGISTER #(.N(32)) dy2_reg0 (.q(dy2_value0), .d(dy2), .clk(pixel_clk));
+  REGISTER #(.N(32)) x0_reg1 (.q(x0_value1), .d(x0_value0), .clk(pixel_clk));
+  REGISTER #(.N(32)) y0_reg1 (.q(y0_value1), .d(y0_value0), .clk(pixel_clk));
+  REGISTER #(.N(32)) x1_reg1 (.q(x1_value1), .d(x1_value0), .clk(pixel_clk));
+  REGISTER #(.N(32)) y1_reg1 (.q(y1_value1), .d(y1_value0), .clk(pixel_clk));
+  REGISTER #(.N(32)) x2_reg1 (.q(x2_value1), .d(x2_value0), .clk(pixel_clk));
+  REGISTER #(.N(32)) y2_reg1 (.q(y2_value1), .d(y2_value0), .clk(pixel_clk)); 
 
   REGISTER #(.N(32)) pixel_x_reg1 (.q(pixel_x_value1), .d(pixel_x_value0), .clk(pixel_clk));
   REGISTER #(.N(32)) pixel_y_reg1 (.q(pixel_y_value1), .d(pixel_y_value0), .clk(pixel_clk));
 
-  wire is_inside_value1;
+  wire signed [31:0] A0, B0, C0;
+  wire signed [31:0] A1, B1, C1;
+  wire signed [31:0] A2, B2, C2;
 
+  wire signed [31:0] A0_value0, B0_value0, C0_value0;
+  wire signed [31:0] A1_value0, B1_value0, C1_value0;
+  wire signed [31:0] A2_value0, B2_value0, C2_value0;
+
+  assign A0 = -dy0_value0;
+  assign B0 = dx0_value0;
+  assign C0 = x0_value1 * dy0_value0 - y0_value1 * dx0_value0;
+
+  assign A1 = -dy1_value0;
+  assign B1 = dx1_value0;
+  assign C1 = x1_value1 * dy1_value0 - y1_value1 * dx1_value0;
+
+  assign A2 = -dy2_value0;
+  assign B2 = dx2_value0;
+  assign C2 = x2_value1 * dy2_value0 - y2_value1 * dx2_value0;
+
+  REGISTER #(.N(32)) A0_reg0(.q(A0_value0), .d(A0), .clk(pixel_clk));
+  REGISTER #(.N(32)) A1_reg0(.q(A1_value0), .d(A1), .clk(pixel_clk));
+  REGISTER #(.N(32)) A2_reg0(.q(A2_value0), .d(A2), .clk(pixel_clk));
+  REGISTER #(.N(32)) B0_reg0(.q(B0_value0), .d(B0), .clk(pixel_clk));
+  REGISTER #(.N(32)) B1_reg0(.q(B1_value0), .d(B1), .clk(pixel_clk));
+  REGISTER #(.N(32)) B2_reg0(.q(B2_value0), .d(B2), .clk(pixel_clk));
+  REGISTER #(.N(32)) C0_reg0(.q(C0_value0), .d(C0), .clk(pixel_clk));
+  REGISTER #(.N(32)) C1_reg0(.q(C1_value0), .d(C1), .clk(pixel_clk));
+  REGISTER #(.N(32)) C2_reg0(.q(C2_value0), .d(C2), .clk(pixel_clk));
+
+  REGISTER #(.N(32)) pixel_x_reg2(.q(pixel_x_value2), .d(pixel_x_value1), .clk(pixel_clk));
+  REGISTER #(.N(32)) pixel_y_reg2(.q(pixel_y_value2), .d(pixel_y_value1), .clk(pixel_clk));
+
+  wire signed [31:0] L0_A_value0, L0_B_value0, L0_C_value0, L0_A_value1, L0_B_value1, L0_C_value1;
+  wire signed [31:0] L1_A_value0, L1_B_value0, L1_C_value0, L1_A_value1, L1_B_value1, L1_C_value1;
+  wire signed [31:0] L2_A_value0, L2_B_value0, L2_C_value0, L2_A_value1, L2_B_value1, L2_C_value1;
+
+  assign L0_A_value0 = A0_value0 * pixel_x_value2;
+  assign L0_B_value0 = B0_value0 * pixel_y_value2;
+  assign L0_C_value0 = C0_value0;
+  assign L1_A_value0 = A1_value0 * pixel_x_value2;
+  assign L1_B_value0 = B1_value0 * pixel_y_value2;
+  assign L1_C_value0 = C1_value0;
+  assign L2_A_value0 = A2_value0 * pixel_x_value2;
+  assign L2_B_value0 = B2_value0 * pixel_y_value2;
+  assign L2_C_value0 = C2_value0;
+
+  REGISTER #(.N(32)) L0_A_reg0 (.q(L0_A_value1), .d(L0_A_value0), .clk(pixel_clk));
+  REGISTER #(.N(32)) L0_B_reg0 (.q(L0_B_value1), .d(L0_B_value0), .clk(pixel_clk)); 
+  REGISTER #(.N(32)) L0_C_reg0 (.q(L0_C_value1), .d(L0_C_value0), .clk(pixel_clk));
+  REGISTER #(.N(32)) L1_A_reg0 (.q(L1_A_value1), .d(L1_A_value0), .clk(pixel_clk));
+  REGISTER #(.N(32)) L1_B_reg0 (.q(L1_B_value1), .d(L1_B_value0), .clk(pixel_clk));
+  REGISTER #(.N(32)) L1_C_reg0 (.q(L1_C_value1), .d(L1_C_value0), .clk(pixel_clk));
+  REGISTER #(.N(32)) L2_A_reg0 (.q(L2_A_value1), .d(L2_A_value0), .clk(pixel_clk));
+  REGISTER #(.N(32)) L2_B_reg0 (.q(L2_B_value1), .d(L2_B_value0), .clk(pixel_clk));
+  REGISTER #(.N(32)) L2_C_reg0 (.q(L2_C_value1), .d(L2_C_value0), .clk(pixel_clk));
+
+
+  REGISTER #(.N(32)) pixel_x_reg3 (.q(pixel_x_value3), .d(pixel_x_value2), .clk(pixel_clk));
+  REGISTER #(.N(32)) pixel_y_reg3 (.q(pixel_y_value3), .d(pixel_y_value2), .clk(pixel_clk));
+
+  wire signed [31:0] L0, L1, L2;
+  assign L0 = L0_A_value1 + L0_B_value1 + L0_C_value1;
+  assign L1 = L1_A_value1 + L1_B_value1 + L1_C_value1;
+  assign L2 = L2_A_value1 + L2_B_value1 + L2_C_value1;
+
+  wire is_inside_value1;
   REGISTER #(.N(1)) is_inside_reg (
     .q(is_inside_value1),
     .d(L0 <= 0 & L1 <= 0 & L2 <= 0),
     .clk(pixel_clk)
   );
 
+
+  REGISTER #(.N(32)) pixel_x_reg4 (.q(pixel_x_value4), .d(pixel_x_value3), .clk(pixel_clk));
+  REGISTER #(.N(32)) pixel_y_reg4 (.q(pixel_y_value4), .d(pixel_y_value3), .clk(pixel_clk));
+
+
   // When you add new pipeline registers/stages, make sure that pixel_x_out and pixel_y_out
   // are assigned to the last stage. Same thing for is_inside.
   // Therefore, is_inside is an indicator of whether pixel (pixel_x_out, pixel_y_out)
   // is inside the triangle
 
-  assign pixel_x_out = pixel_x_value1;
-  assign pixel_y_out = pixel_y_value1;
+  assign pixel_x_out = pixel_x_value4;
+  assign pixel_y_out = pixel_y_value4;
   assign is_inside   = is_inside_value1;
 
 endmodule
